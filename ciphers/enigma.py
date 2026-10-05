@@ -173,6 +173,9 @@ class EnigmaM3:
         clean = _clean_alphabet(text)
         return "".join(self.process_char(c) for c in clean)
 
+    def get_positions(self) -> List[str]:
+        return [chr(r.position + ord("A")) for r in self.rotors]
+
     def encrypt(self, text: str) -> str:
         return self.process_text(text)
 

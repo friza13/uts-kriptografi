@@ -39,5 +39,19 @@
     8. `ciphers/enigma.py`: Enigma M3 Machine (Rotors I-V, Reflector B/C, Plugboard, double-stepping)
     9. `ciphers/file_crypto.py`: Binary file wrapper with KRIPTO magic header and filename preservation
   - Unit tests: `tests/test_ciphers.py` (38/38 passing, 100% green)
-- **Phase 2 (Pending):** Flask Web UI and Endpoints
+- **Phase 2 (Completed):**
+  - Flask web server & REST API (`app.py`):
+    - `GET /`: Renders UI with student metadata (Friza Tri Maulana, 237006125, Informatika UNSIL)
+    - `POST /api/encrypt/text`: Encrypts text for all 8 ciphers, returns raw/base64/hex and visual extras (Playfair matrix, Hill modular inverse, Enigma end positions)
+    - `POST /api/decrypt/text`: Decrypts text from raw, base64, or hex format
+    - `POST /api/encrypt/file`: Encrypts arbitrary binary files (docx, pdf, jpg, mp4, db, etc.) with KRIPTO metadata header, returns `.dat` download
+    - `POST /api/decrypt/file`: Decrypts binary files, recovers original filename and extension intact
+  - Web UI:
+    - `templates/index.html`: Responsive dual-tab interface (Text & File)
+    - `static/css/style.css`: Clean, professional typography (Plus Jakarta Sans & JetBrains Mono)
+    - `static/js/main.js`: Dynamic cipher selection, parameters, matrix visualizer, drag-and-drop file upload, clipboard copy, and file download
+  - Integration tests: `tests/test_app.py` (14/14 passing, total 52/52 tests green across suite)
+  - Dependencies: `requirements.txt` (Flask, numpy)
+- **Phase 3 (Pending):** Comprehensive Multi-Format File Testing & PDF Report Generation
+
 

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Kriptografi Klasik & Modern — UTS Kriptografi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <!-- Header & Student Metadata -->
+  <header class="app-header">
+    <div class="container header-content">
+      <div class="header-brand">
+        <div class="badge-tag">UTS KRIPTOGRAFI 2024/2025</div>
+        <h1>Sistem Kriptografi Klasik & Modern</h1>
+        <p class="subtitle">Platform Enkripsi & Dekripsi Berbasis Web untuk Teks dan Berkas Biner Sembarang</p>
+      </div>
+      <div class="student-card">
+        <div class="student-avatar">FT</div>
+        <div class="student-info">
+          <h3>{{ student.name }}</h3>
+          <p class="nim">NIM: <strong>{{ student.nim }}</strong></p>
+          <p class="univ">{{ student.class }}</p>
+          <p class="lecturer">Dosen: {{ student.lecturer }}</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container app-main">
+    <!-- Mode Tabs -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" data-tab="text-tab">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
+        </svg>
+        <span>Enkripsi & Dekripsi Teks</span>
+      </button>
+      <button class="tab-btn" data-tab="file-tab">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        <span>Enkripsi & Dekripsi Berkas (File)</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: TEXT CRYPTOGRAPHY -->
+    <section id="text-tab" class="tab-content active">
+      <div class="grid-2col">
+        <!-- Input & Config Panel -->
+        <div class="card panel-input">
+          <h2 class="card-title">Konfigurasi & Masukan Pesan</h2>
+
+          <!-- Cipher Selection -->
+          <div class="form-group">
+            <label for="cipher-select">Pilih Algoritma Kriptografi:</label>
+            <select id="cipher-select" class="form-select">
+              <optgroup label="Vigenere Family">
+                <option value="vigenere_standard" selected>a) Standard Vigenere Cipher (26 Alfabet)</option>
+                <option value="vigenere_autokey">b) Auto-Key Vigenere Cipher (26 Alfabet)</option>
+                <option value="vigenere_extended">c) Extended Vigenere Cipher (256 ASCII / Biner)</option>
+              </optgroup>
+              <optgroup label="Classical Substitution">
+                <option value="playfair">d) Playfair Cipher (5x5 Matriks, I/J Digabung)</option>
+                <option value="affine">e) Affine Cipher (C = aP + b mod 26)</option>
+                <option value="hill">f) Hill Cipher (Matriks 2x2 / 3x3)</option>
+              </optgroup>
+              <optgroup label="Advanced & Bonus">
+                <option value="super_encryption">g) Super Enkripsi (Ext. Vigenere + Transposisi Kolom)</option>
+                <option value="enigma">h) Bonus 1: Enigma Machine M3 (3 Rotor, Reflector B, Plugboard)</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <!-- Dynamic Key Parameters -->
+          <div id="key-container" class="key-container">
+            <!-- Standard / Autokey / Extended Key -->
+            <div id="key-simple" class="key-group">
+              <label for="input-key">Kunci (Key / Passphrase):</label>
+              <input type="text" id="input-key" class="form-input" placeholder="Masukkan kunci rahasia..." value="LEMON">
+              <small class="help-text" id="simple-key-help">Untuk 26 alfabet, karakter non-huruf akan diabaikan secara otomatis.</small>
+            </div>
+
+            <!-- Affine Parameters (a, b) -->
+            <div id="key-affine" class="key-group" style="display:none;">
+              <div class="grid-2col-nested">
+                <div>
+                  <label for="affine-a">Nilai a (Harus Koprima dengan 26):</label>
+                  <input type="number" id="affine-a" class="form-input" value="5" min="1" max="25">
+                </div>
+                <div>
+                  <label for="affine-b">Nilai b (Pergeseran 0-25):</label>
+                  <input type="number" id="affine-b" class="form-input" value="8" min="0" max="25">
+                </div>
+              </div>
+              <small class="help-text">Nilai 'a' valid: <strong>1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25</strong> (gcd(a, 26) = 1).</small>
+            </div>
+
+            <!-- Hill Parameters -->
+            <div id="key-hill" class="key-group" style="display:none;">
+              <div class="hill-config-bar">
+                <label>Ukuran Matriks:</label>
+                <div class="radio-inline">
+                  <label><input type="radio" name="hill-size" value="2" checked> 2x2</label>
+                  <label><input type="radio" name="hill-size" value="3"> 3x3</label>
+                </div>
+              </div>
+              <!-- 2x2 Matrix Grid -->
+              <div id="hill-matrix-2x2" class="matrix-grid matrix-2x2">
+                <input type="number" class="matrix-cell" id="h2-00" value="3">
+                <input type="number" class="matrix-cell" id="h2-01" value="3">
+                <input type="number" class="matrix-cell" id="h2-10" value="2">
+                <input type="number" class="matrix-cell" id="h2-11" value="5">
+              </div>
+              <!-- 3x3 Matrix Grid -->
+              <div id="hill-matrix-3x3" class="matrix-grid matrix-3x3" style="display:none;">
+                <input type="number" class="matrix-cell" id="h3-00" value="6">
+                <input type="number" class="matrix-cell" id="h3-01" value="24">
+                <input type="number" class="matrix-cell" id="h3-02" value="1">
+                <input type="number" class="matrix-cell" id="h3-10" value="13">
+                <input type="number" class="matrix-cell" id="h3-11" value="16">
+                <input type="number" class="matrix-cell" id="h3-12" value="10">
+                <input type="number" class="matrix-cell" id="h3-20" value="20">
+                <input type="number" class="matrix-cell" id="h3-21" value="17">
+                <input type="number" class="matrix-cell" id="h3-22" value="15">
+              </div>
+              <small class="help-text">Determinan matriks mod 26 harus koprima dengan 26 agar memiliki matriks balikan.</small>
+            </div>
+
+            <!-- Super Encryption Parameters -->
+            <div id="key-super" class="key-group" style="display:none;">
+              <div class="form-group">
+                <label for="super-vkey">Kunci 1 (Extended Vigenere):</label>
+                <input type="text" id="super-vkey" class="form-input" placeholder="Kunci substitusi..." value="VIGENEREPASS">
+              </div>
+              <div class="form-group">
+                <label for="super-tkey">Kunci 2 (Transposisi Kolom):</label>
+                <input type="text" id="super-tkey" class="form-input" placeholder="Kunci urutan kolom (kata/angka)..." value="CRYPTO">
+              </div>
+            </div>
+
+            <!-- Enigma Parameters -->
+            <div id="key-enigma" class="key-group" style="display:none;">
+              <div class="grid-3col">
+                <div>
+                  <label>Rotor Kiri:</label>
+                  <select id="enigma-r1" class="form-select">
+                    <option value="I" selected>Rotor I</option>
+                    <option value="II">Rotor II</option>
+                    <option value="III">Rotor III</option>
+                    <option value="IV">Rotor IV</option>
+                    <option value="V">Rotor V</option>
+                  </select>
+                  <input type="text" id="enigma-pos1" class="form-input pos-input" value="A" maxlength="1">
+                </div>
+                <div>
+                  <label>Rotor Tengah:</label>
+                  <select id="enigma-r2" class="form-select">
+                    <option value="I">Rotor I</option>
+                    <option value="II" selected>Rotor II</option>
+                    <option value="III">Rotor III</option>
+                    <option value="IV">Rotor IV</option>
+                    <option value="V">Rotor V</option>
+                  </select>
+                  <input type="text" id="enigma-pos2" class="form-input pos-input" value="A" maxlength="1">
+                </div>
+                <div>
+                  <label>Rotor Kanan:</label>
+                  <select id="enigma-r3" class="form-select">
+                    <option value="I">Rotor I</option>
+                    <option value="II">Rotor II</option>
+                    <option value="III" selected>Rotor III</option>
+                    <option value="IV">Rotor IV</option>
+                    <option value="V">Rotor V</option>
+                  </select>
+                  <input type="text" id="enigma-pos3" class="form-input pos-input" value="A" maxlength="1">
+                </div>
+              </div>
+              <div class="grid-2col-nested" style="margin-top: 10px;">
+                <div>
+                  <label for="enigma-reflector">Reflector:</label>
+                  <select id="enigma-reflector" class="form-select">
+                    <option value="B" selected>Reflector B</option>
+                    <option value="C">Reflector C</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="enigma-plugboard">Plugboard (Steckerbrett):</label>
+                  <input type="text" id="enigma-plugboard" class="form-input" placeholder="Contoh: AB CD EF" value="">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input Textarea -->
+          <div class="form-group" style="margin-top: 16px;">
+            <div class="label-row">
+              <label for="text-input">Teks Masukan (Plainteks / Cipherteks):</label>
+              <div class="format-indicator">
+                <label for="input-format-select">Format Dekripsi:</label>
+                <select id="input-format-select" class="form-select-sm">
+                  <option value="raw" selected>Raw Text / Alphabet</option>
+                  <option value="base64">Base64</option>
+                  <option value="hex">Hexadecimal</option>
+                </select>
+              </div>
+            </div>
+            <textarea id="text-input" class="form-textarea" rows="4" placeholder="Ketik atau tempel teks di sini...">ATTACKATDAWN</textarea>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button id="btn-encrypt-text" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <span>Enkripsi Teks</span>
+            </button>
+            <button id="btn-decrypt-text" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+              </svg>
+              <span>Dekripsi Teks</span>
+            </button>
+            <button id="btn-swap-text" class="btn btn-outline" title="Gunakan Hasil sebagai Masukan">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="7 10 12 15 17 10"/>
+                <polyline points="17 14 12 9 7 14"/>
+              </svg>
+              <span>Tukar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Output & Visualizations Panel -->
+        <div class="card panel-output">
+          <div class="label-row">
+            <h2 class="card-title">Hasil Pemrosesan Kriptografi</h2>
+            <div id="cipher-tag" class="cipher-badge">STANDARD VIGENERE</div>
+          </div>
+
+          <!-- Raw Output -->
+          <div class="output-group">
+            <div class="output-header">
+              <label>Keluaran Teks (Cipherteks / Plainteks):</label>
+              <div class="btn-group-sm">
+                <button class="btn-icon" data-copy="output-raw" title="Salin Raw Text">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                  </svg>
+                  <span>Salin</span>
+                </button>
+                <button id="btn-download-txt" class="btn-icon" title="Unduh sebagai file .txt">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  <span>Unduh .txt</span>
+                </button>
+              </div>
+            </div>
+            <textarea id="output-raw" class="form-textarea code-font" rows="3" readonly placeholder="Hasil akan muncul di sini..."></textarea>
+          </div>
+
+          <!-- Base64 Output -->
+          <div class="output-group">
+            <div class="output-header">
+              <label>Representasi Base64:</label>
+              <button class="btn-icon" data-copy="output-b64" title="Salin Base64">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                <span>Salin</span>
+              </button>
+            </div>
+            <textarea id="output-b64" class="form-textarea code-font" rows="2" readonly placeholder="Base64 encoded output..."></textarea>
+          </div>
+
+          <!-- Hexadecimal Output -->
+          <div class="output-group">
+            <div class="output-header">
+              <label>Representasi Heksadesimal (Hex):</label>
+              <button class="btn-icon" data-copy="output-hex" title="Salin Hex">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                <span>Salin</span>
+              </button>
+            </div>
+            <textarea id="output-hex" class="form-textarea code-font" rows="2" readonly placeholder="Hexadecimal bytes output..."></textarea>
+          </div>
+
+          <!-- Visual Inspections (Playfair Matrix / Hill Inversion) -->
+          <div id="visual-card" class="visual-card" style="display: none;">
+            <h3 id="visual-title">Visualisasi Struktur Cipher</h3>
+            <div id="visual-content"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: FILE CRYPTOGRAPHY -->
+    <section id="file-tab" class="tab-content">
+      <div class="card file-card">
+        <h2 class="card-title">Enkripsi & Dekripsi Berkas Biner Sembarang</h2>
+        <p class="subtitle">Mendukung semua format berkas (DOCX, PDF, JPG, PNG, MP3, MP4, SQLite/DB, dsb). Metadata header <code>KRIPTO</code> disisipkan otomatis untuk memulihkan nama dan ekstensi asli saat didekripsi.</p>
+
+        <!-- Drag & Drop Upload Zone -->
+        <div id="drop-zone" class="drop-zone">
+          <input type="file" id="file-input" class="file-input-hidden">
+          <div class="drop-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <h3>Tarik & Letakkan Berkas di Sini atau <span class="highlight-click">Pilih Berkas</span></h3>
+          <p class="file-limits">Maksimal ukuran file: 100 MB. Berkas diproses langsung secara biner byte-by-byte.</p>
+        </div>
+
+        <!-- File Details Card (when selected) -->
+        <div id="file-details" class="file-details" style="display: none;">
+          <div class="file-info-row">
+            <div class="file-badge-icon">FILE</div>
+            <div>
+              <div id="detail-filename" class="file-name">nama_berkas.ext</div>
+              <div id="detail-filesize" class="file-meta">0 KB — application/octet-stream</div>
+            </div>
+          </div>
+          <button id="btn-remove-file" class="btn-text-danger" title="Batal Pilih Berkas">&times; Hapus</button>
+        </div>
+
+        <!-- File Cipher Configuration -->
+        <div class="grid-2col-nested" style="margin-top: 20px;">
+          <div class="form-group">
+            <label for="file-cipher-select">Algoritma Kriptografi Berkas:</label>
+            <select id="file-cipher-select" class="form-select">
+              <option value="extended_vigenere" selected>c) Extended Vigenere Cipher (256 Byte Modulo)</option>
+              <option value="super_encryption">g) Super Enkripsi (Ext. Vigenere + Transposisi Kolom)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="file-key">Kunci Rahasia File:</label>
+            <input type="text" id="file-key" class="form-input" placeholder="Masukkan kunci enkripsi file..." value="KunciRahasiaFile2026!">
+          </div>
+        </div>
+
+        <div id="file-super-extra" class="form-group" style="display: none;">
+          <label for="file-tkey">Kunci Transposisi Kolom (Super Enkripsi):</label>
+          <input type="text" id="file-tkey" class="form-input" placeholder="Kunci transposisi..." value="KOLOMBERKAS">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons file-actions">
+          <button id="btn-encrypt-file" class="btn btn-primary btn-large">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <span>Enkripsi Berkas (.dat)</span>
+          </button>
+          <button id="btn-decrypt-file" class="btn btn-secondary btn-large">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+            </svg>
+            <span>Dekripsi Berkas (Format Asli)</span>
+          </button>
+        </div>
+
+        <!-- Processing Status / Download Banner -->
+        <div id="file-status" class="alert-box" style="display: none;"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast">Notifikasi</div>
+
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p>&copy; 2024/2025 <strong>Friza Tri Maulana</strong> (NIM: 237006125) — Tugas Project-Based UTS Kriptografi</p>
+      <p class="subfooter">Program Studi Informatika, Fakultas Teknik, Universitas Siliwangi</p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
