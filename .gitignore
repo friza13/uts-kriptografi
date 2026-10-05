@@ -1,0 +1,20 @@
+# Lingkungan Python & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Berkas Internal Orkestrasi & Perencanaan AI (Dikecualikan dari Pengumpulan)
+docs/internal/
+.opencode/
+.antigravity/
+
+# Berkas Unggahan Sementara
+uploads/
+temp/
+*.tmp
