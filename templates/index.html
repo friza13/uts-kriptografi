@@ -10,22 +10,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <!-- Header & Student Metadata -->
+  <!-- Header -->
   <header class="app-header">
     <div class="container header-content">
       <div class="header-brand">
-        <div class="badge-tag">UTS KRIPTOGRAFI 2024/2025</div>
         <h1>Sistem Kriptografi Klasik & Modern</h1>
         <p class="subtitle">Platform Enkripsi & Dekripsi Berbasis Web untuk Teks dan Berkas Biner Sembarang</p>
-      </div>
-      <div class="student-card">
-        <div class="student-avatar">FT</div>
-        <div class="student-info">
-          <h3>{{ student.name }}</h3>
-          <p class="nim">NIM: <strong>{{ student.nim }}</strong></p>
-          <p class="univ">{{ student.class }}</p>
-          <p class="lecturer">Dosen: {{ student.lecturer }}</p>
-        </div>
       </div>
     </div>
   </header>
@@ -62,19 +52,19 @@
           <div class="form-group">
             <label for="cipher-select">Pilih Algoritma Kriptografi:</label>
             <select id="cipher-select" class="form-select">
-              <optgroup label="Vigenere Family">
-                <option value="vigenere_standard" selected>a) Standard Vigenere Cipher (26 Alfabet)</option>
-                <option value="vigenere_autokey">b) Auto-Key Vigenere Cipher (26 Alfabet)</option>
-                <option value="vigenere_extended">c) Extended Vigenere Cipher (256 ASCII / Biner)</option>
+              <optgroup label="Keluarga Vigenere">
+                <option value="vigenere_standard" selected>Standard Vigenere Cipher (26 Alfabet)</option>
+                <option value="vigenere_autokey">Auto-Key Vigenere Cipher (26 Alfabet)</option>
+                <option value="vigenere_extended">Extended Vigenere Cipher (256 ASCII)</option>
               </optgroup>
-              <optgroup label="Classical Substitution">
-                <option value="playfair">d) Playfair Cipher (5x5 Matriks, I/J Digabung)</option>
-                <option value="affine">e) Affine Cipher (C = aP + b mod 26)</option>
-                <option value="hill">f) Hill Cipher (Matriks 2x2 / 3x3)</option>
+              <optgroup label="Substitusi Klasik">
+                <option value="playfair">Playfair Cipher (Matriks 5x5)</option>
+                <option value="affine">Affine Cipher (C = aP + b mod 26)</option>
+                <option value="hill">Hill Cipher (Matriks 2x2 / 3x3)</option>
               </optgroup>
-              <optgroup label="Advanced & Bonus">
-                <option value="super_encryption">g) Super Enkripsi (Ext. Vigenere + Transposisi Kolom)</option>
-                <option value="enigma">h) Bonus 1: Enigma Machine M3 (3 Rotor, Reflector B, Plugboard)</option>
+              <optgroup label="Kombinasi & Mesin Sandi">
+                <option value="super_encryption">Super Enkripsi (Vigenere + Transposisi Kolom)</option>
+                <option value="enigma">Enigma Cipher (Mesin M3)</option>
               </optgroup>
             </select>
           </div>

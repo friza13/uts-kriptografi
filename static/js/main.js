@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Cipher Selection Handler ---
   function updateCipherUI() {
     const cipher = cipherSelect.value;
-    cipherTag.textContent = cipherSelect.options[cipherSelect.selectedIndex].text.split(')')[1].trim().toUpperCase();
+    const optText = cipherSelect.options[cipherSelect.selectedIndex].text;
+    cipherTag.textContent = optText.split('(')[0].trim().toUpperCase();
 
     // Hide all key groups
     keySimple.style.display = 'none';
