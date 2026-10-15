@@ -21,8 +21,7 @@ class TestAppIntegration(unittest.TestCase):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
         html = response.data.decode("utf-8")
-        self.assertIn("Friza Tri Maulana", html)
-        self.assertIn("237006125", html)
+        self.assertIn("CipherForge", html)
         self.assertIn("Kriptografi", html)
 
     # 1. Standard Vigenere
