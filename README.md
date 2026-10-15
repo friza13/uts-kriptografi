@@ -1,52 +1,40 @@
 # CipherForge — Web Engine Kriptografi Klasik & Modern
-**Tugas Project-Based Ujian Tengah Semester (UTS) — Mata Kuliah Kriptografi**  
-Program Studi Informatika, Fakultas Teknik, Universitas Siliwangi (2024/2025)
+Proyek Ujian Tengah Semester (UTS) — Mata Kuliah Kriptografi  
+Jurusan Informatika, Fakultas Teknik, Universitas Siliwangi
 
 * **Nama Mahasiswa :** Friza Tri Maulana  
-* **NIM            :** 237006125 (Kelas A)  
+* **NPM            :** 237006125 (Kelas E)  
 * **Dosen Pengampu :** Ir. Randi Rizal, Ph.D.  
-* **Repositori     :** [https://github.com/friza13/uts-kriptografi](https://github.com/friza13/uts-kriptografi)
+* **Demo Aplikasi  :** [https://kripto.prizftm.my.id](https://kripto.prizftm.my.id)
 
 ---
 
-## 1. Deskripsi Aplikasi
+## Deskripsi Singkat
 
-Aplikasi ini merupakan perangkat lunak berbasis web mandiri (*self-hosted web application*) yang dibangun menggunakan **Python 3** dan framework **Flask**. Aplikasi ini menyediakan antarmuka terpadu untuk pengujian enkripsi dan dekripsi pesan teks serta berkas sembarang (*arbitrary binary files*) menggunakan algoritma kriptografi klasik dan kombinasinya.
+CipherForge adalah aplikasi web pengujian kriptografi klasik dan modern yang dibangun menggunakan Python (Flask) dan JavaScript murni. Aplikasi ini dirancang untuk memproses enkripsi dan dekripsi pesan teks secara interaktif serta berkas biner sembarang (*arbitrary files*) tanpa merusak format berkas aslinya.
 
-### Algoritma yang Diimplementasikan:
-1. **Standard Vigenère Cipher:** Substitusi polialfabetik 26 alfabet kapital tanpa spasi.
-2. **Auto-Key Vigenère Cipher:** Aliran kunci berlanjut menggunakan karakter plainteks asli.
-3. **Extended Vigenère Cipher:** Operasi byte-by-byte pada ranah 256 ASCII (mendukung teks dan file biner).
-4. **Playfair Cipher:** Matriks $5 \times 5$ dengan penggabungan huruf I/J, penyisipan karakter pengisi (X/Z), dan pembentukan bigram.
-5. **Affine Cipher:** Substitusi linier $C = (a \cdot P + b) \bmod 26$ dengan validasi matematis $\gcd(a, 26) = 1$ serta invers modulo via *Extended Euclidean Algorithm*.
-6. **Hill Cipher:** Kriptosistem matriks $2 \times 2$ dan $3 \times 3$ dengan validasi determinan koprima terhadap 26 dan matriks balikan modular (*adjugate inverse matrix*).
-7. **Super Enkripsi:** Kombinasi bertingkat antara *Extended Vigenère Cipher* (substitusi) dan *Columnar Transposition Cipher* (transposisi kolom beraturan/tak beraturan).
-8. **Enigma Cipher (Bonus 1):** Simulasi mesin sandi Enigma M3 (3 Rotor I–V, Reflector B/C, Plugboard, dan *stepping mechanism*).
-
----
-
-## 2. Fitur Unggulan Sistem
-
-* **Dukungan Berkas Biner Universal (*Any File Type*):**  
-  Mampu mengenkripsi seluruh byte berkas (termasuk *header* berkas) sehingga berkas terenkripsi tidak dapat dibuka oleh aplikasi pemutarnya sebelum didekripsi kembali.
-* **Preservasi Metadata Ekstensi (*Self-Describing Packet Header*):**  
-  Menyisipkan *header* aman 8-byte (`KRIPTO`) yang memuat nama dan format ekstensi asli berkas (misal `.docx`, `.pdf`, `.jpg`, `.mp3`, `.mp4`, `.db`). Saat didekripsi, berkas otomatis dipulihkan ke nama dan format aslinya tanpa risiko korupsi.
-* **Representasi Output Ganda:**  
-  Hasil cipherteks teks dapat ditampilkan dalam bentuk **Raw Alphabet** (rapat tanpa spasi), **Base64**, dan **Heksadesimal (Hex)**.
-* **Visualisasi Edukatif Real-Time:**  
-  Menampilkan tabel matriks $5 \times 5$ Playfair, matriks kunci beserta balikan modulo Hill Cipher, serta pergeseran rotor Enigma.
-* **Dukungan Uji Otomatis:**  
-  Dilengkapi rangkaian *unit test* dan *integration test* lengkap (52 skenario pengujian, 100% *pass*).
+### Daftar Algoritma yang Tersedia:
+1. **Standard Vigenère Cipher:** Substitusi polialfabetik 26 alfabet kapital (kunci diulang secara periodik).
+2. **Auto-Key Vigenère Cipher:** Aliran kunci disambung dengan karakter plainteks asli untuk mencegah periodisitas Kasiski.
+3. **Extended Vigenère Cipher:** Operasi modulo 256 pada ranah byte ASCII penuh (mendukung teks dan file biner).
+4. **Playfair Cipher:** Substitusi digraf menggunakan matriks kunci 5×5 (penggabungan I/J, penyisipan karakter pengisi X/Z).
+5. **Affine Cipher:** Substitusi linier $C = (a \cdot P + b) \bmod 26$ dengan verifikasi syarat koprima $\gcd(a, 26) = 1$.
+6. **Hill Cipher:** Kriptografi poligram berbasis matriks ordo 2×2 dan 3×3 dengan invers determinan modular 26.
+7. **Super Enkripsi:** Kombinasi rantai substitusi Extended Vigenère (256 byte) dan permutasi transposisi kolom.
+8. **Enigma Machine M3 (Bonus):** Simulasi mesin sandi elektromekanis dengan 3 rotor berputar (I–V), Reflektor B/C, dan kabel penukar Plugboard (*Steckerbrett*).
 
 ---
 
-## 3. Panduan Instalasi & Eksekusi
+## Fitur Utama
 
-### Kebutuhan Sistem:
-* Python 3.9+ (disarankan Python 3.10 ke atas)
-* Web Browser modern (Chrome, Chromium, Firefox, Edge)
+* **Dual-Mode Input:** Pemrosesan teks langsung dari keyboard dan unggah berkas biner sembarang (PDF, DOCX, PNG, JPG, MP3, MP4, DB).
+* **Protokol Berkas `KRIPTO`:** Menyimpan nama dan format ekstensi asli berkas ke dalam header paket biner sehingga saat didekripsi berkas pulih 100% utuh.
+* **Tiga Format Output:** Menampilkan cipherteks dalam bentuk teks alfabet, Base64, dan heksadesimal (Hex).
+* **Validasi Matematis Real-Time:** Pengecekan nilai kunci tidak valid (invers determinan matriks Hill dan koprima Affine) langsung pada antarmuka.
 
-### Langkah Menjalankan:
+---
+
+## Cara Menjalankan
 
 1. **Clone Repositori:**
    ```bash
@@ -59,38 +47,17 @@ Aplikasi ini merupakan perangkat lunak berbasis web mandiri (*self-hosted web ap
    pip install -r requirements.txt
    ```
 
-3. **Jalankan Aplikasi:**
+3. **Jalankan Server:**
    ```bash
    python app.py
    ```
 
-4. **Akses Antarmuka Web:**  
-   Buka peramban (*web browser*) dan navigasikan ke:
+4. **Buka Browser:**
+   Akses antarmuka web di:
    ```text
    http://localhost:5000
    ```
-
----
-
-## 4. Menjalankan Rangkaian Uji Otomatis (*Automated Tests*)
-
-Untuk memverifikasi kebenaran algoritma dan rute web, jalankan perintah:
-```bash
-python -m unittest discover tests -v
-```
-
----
-
-## 5. Tabel Evaluasi Keberhasilan Spek
-
-| No | Spesifikasi Fitur Soal | Status | Keterangan Teknis |
-|:---:|:---|:---:|:---|
-| 1 | Vigenère Cipher Standard (26 Alfabet) | **Berhasil (✓)** | Sanitasi alfabet, enkripsi/dekripsi akurat, tanpa spasi. |
-| 2 | Auto-Key Vigenère Cipher (26 Alfabet) | **Berhasil (✓)** | Aliran kunci plainteks berjalan presisi, resiprokal 100%. |
-| 3 | Extended Vigenère Cipher (256 ASCII) | **Berhasil (✓)** | Mendukung teks berkarakter bebas dan berkas biner penuh. |
-| 4 | Playfair Cipher (26 Alfabet) | **Berhasil (✓)** | Matriks $5 \times 5$, aturan I/J, pemisah huruf ganda X/Z. |
-| 5 | Affine Cipher (26 Alfabet) | **Berhasil (✓)** | Formula modulo 26, validasi koprima $\gcd(a, 26)=1$. |
-| 6 | Hill Cipher (26 Alfabet) | **Berhasil (✓)** | Matriks $2 \times 2$ dan $3 \times 3$, invers modular adjugate. |
-| 7 | Super Enkripsi (Extended + Transposisi) | **Berhasil (✓)** | Kombinasi substitusi 256 dan transposisi kolom biner. |
-| 8 | (Bonus 1) Enigma Cipher | **Berhasil (✓)** | Simulasi Enigma M3 (Rotor, Reflector B, Plugboard). |
-| 9 | (Bonus 2) Bahasa Pemrograman | **Dialihkan** | Dibangun menggunakan Python (Flask) untuk stabilitas platform. |
+   atau melalui versi deployment server di:
+   ```text
+   https://kripto.prizftm.my.id
+   ```

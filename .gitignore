@@ -9,10 +9,18 @@ venv/
 .venv/
 ENV/
 
-# Berkas Internal Orkestrasi & Perencanaan AI (Dikecualikan dari Pengumpulan)
-docs/internal/
+# Dokumentasi, Pengujian, dan Berkas Pendukung
+docs/
+tests/
+*.pdf
+*.zip
+*.pptx
+
+# Editor & Lingkungan Pengembangan
 .opencode/
 .antigravity/
+.vscode/
+.idea/
 
 # Berkas Unggahan Sementara
 uploads/
