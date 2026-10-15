@@ -7,7 +7,45 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=20261015_01">
+  <style>
+    .matrix-grid {
+      display: grid !important;
+      gap: 8px !important;
+      width: 100% !important;
+      margin: 10px 0 !important;
+      box-sizing: border-box !important;
+    }
+    .matrix-2x2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      max-width: 180px !important;
+    }
+    .matrix-3x3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      max-width: 270px !important;
+    }
+    .matrix-cell {
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      text-align: center !important;
+      padding: 8px 4px !important;
+      font-family: var(--font-mono) !important;
+      font-weight: 600 !important;
+      font-size: 0.95rem !important;
+      background: #ffffff !important;
+      color: var(--text-main) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 6px !important;
+      -moz-appearance: textfield !important;
+    }
+    .matrix-cell::-webkit-outer-spin-button,
+    .matrix-cell::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0 !important;
+    }
+  </style>
 </head>
 <body>
   <!-- Header -->
