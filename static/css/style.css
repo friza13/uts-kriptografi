@@ -296,26 +296,46 @@ label {
 .matrix-grid {
   display: grid;
   gap: 8px;
-  max-width: 240px;
+  width: 100%;
   margin: 10px 0;
 }
 
 .matrix-2x2 {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 180px;
 }
 
 .matrix-3x3 {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 270px;
 }
 
 .matrix-cell {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   text-align: center;
-  padding: 8px;
+  padding: 8px 4px;
   border: 1px solid var(--border);
   border-radius: 6px;
   font-family: var(--font-mono);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: var(--text-main);
+  -moz-appearance: textfield;
+}
+
+.matrix-cell::-webkit-outer-spin-button,
+.matrix-cell::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.matrix-cell:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .pos-input {
